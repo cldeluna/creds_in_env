@@ -46,7 +46,7 @@ def set_env(desc="Username", debug=True):
 def set_creds(self, prefix="None", context="default"):
     """ Check for username and password env vars first.  If those
     don't exist, then prompt user for creds.
-    CREDIT: Chris Crook Posted to Nornir Slack Channel Oct 18, 2019
+    CREDIT: Chris Crook ([@ctopher78](https://twitter.com/ctopher78)) Posted to Nornir Slack Channel Oct 18, 2019
     Note: "self" is the Nornir object for which we are setting credentials
     The context will define the object level:
     - default = Default Nornir password for all

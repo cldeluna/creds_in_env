@@ -39,7 +39,7 @@ def main():
     # Using the variables in the .env_example file - Remember to update as needed
     list_of_vars = ['API_KEY', 'MY_ENV', 'MY_REPO', 'CONTEXT', 'NETUSER', 'NETPASS', 'MY_BOOL', 'MY_INT', 'TEST']
 
-    print(f"\n======= View Variables from .env file: ")
+    print(f"\n======= View Variables loaded from .env file: ")
     for var in list_of_vars:
         print(f".env file variable name: {var} with value: {decouple.config(var)} of type {type(decouple.config(var))}")
 
@@ -65,9 +65,5 @@ def main():
 if __name__ == '__main__':
     parser = argparse.ArgumentParser(description="Script Description",
                                      epilog="Usage: ' python load_2env' ")
-
-    #parser.add_argument('all', help='Execute all exercises in week 4 assignment')
-    parser.add_argument('-a', '--all', help='Execute all exercises in week 4 assignment', action='store_true',
-                        default=False)
     arguments = parser.parse_args()
     main()

@@ -53,23 +53,26 @@ def main():
 
     # Verify that the environment variables in our .env file are set
     # Using the variables in the .env_example file - Remember to update as needed
-    list_of_vars = ['API_KEY', 'MY_ENV', 'MY_REPO', 'CONTEXT', 'NETUSER', 'NETPASS', 'MY_BOOL', 'MY_INT']
+    list_of_vars = ['API_KEY', 'MY_ENV', 'MY_REPO', 'CONTEXT', 'NETUSER', 'NETPASS', 'MY_BOOL', 'MY_INT', "NOT_THERE"]
 
     # Look for each of the variables in the list_of_vars list to confirm that they have been set in memory as
     # environment variables
+    print(f"\n======= Confirm variables loaded from .env file are valid environment variables: ")
     for var in list_of_vars:
+
         var_dict = add_2env.check_env(var)
-        # print(f"\n")
-        print(var_dict)
+        if var_dict['VALID']:
+            print(f"\tEnvironment Variable {var_dict['NAME']} is valid!")
+        else:
+            if var_dict['EXISTS']:
+                print(f"\tEnvironment Variable {var_dict['NAME']} is NOT valid and may exists but is empty!")
+            else:
+                print(f"\tEnvironment Variable {var_dict['NAME']} does not exist!")
 
 
 # Standard call to the main() function.
 if __name__ == '__main__':
     parser = argparse.ArgumentParser(description="Script Description",
                                      epilog="Usage: ' python load_2env' ")
-
-    #parser.add_argument('all', help='Execute all exercises in week 4 assignment')
-    parser.add_argument('-a', '--all', help='Execute all exercises in week 4 assignment', action='store_true',
-                        default=False)
     arguments = parser.parse_args()
     main()

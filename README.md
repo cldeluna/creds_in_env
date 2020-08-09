@@ -1,6 +1,8 @@
-# Credentials in Python for Network Engineers
+# Managing Credentials and Keys More Securely in Python for Network Engineers
 
-For me, 2020 is going to be the year of taking my automation skills to the next level, and a Pandemic is not going to get in the way of that goal!
+How Network Engineers can manage credentials and keys more securely in python
+
+For me, 2020 is going to be the year of taking my automation skills to the next level, and a Pandemic is not going to get in the way of that goal (much)!
 
 At the top of the list is handling credentials and API keys in a more secure fashion.   When you are first learning, most of the examples you find (mine included) put passwords in clear text in files or have you input them interactively.  
 
@@ -16,17 +18,23 @@ In short, what we all already know:
 - exposing credentials BAD
 - stopping program executions to enter values BAD
 
-In my mind, there are 4 categories of approaches:
+In my mind, these are the broad categories of approaches:
 
 - Interactive 
   - With this method, the script will interactively ask for the credentials during run time or you provide them during execution via parameters.
-- File
+- File - Encrypted and Unencrypted
   - Put credentials and keys in a file which may or may not be encrypted.  At runtime you decrypt the file as needed and load the sensitive information into your script.  The problem here is that you need a key to decrypt the file and unless you enter that interactively you have to store it somewhere so that its accessible at run time and at that point, if someone has access to the script they likely have access to the key so you are not much better off.
 - Environment Variables 
   - Set credentials and keys as environment variables that your script can access during runtime.
   - In fact these can be set interactively (think CLI) and via a file as well (look for .env or .ini files in repositories and you now know what they are)
-- Tap into OS credentials store
-  - The python [keyring](https://pypi.org/project/keyring/) module allows you to access a systems' keyring service (Mac OS X Keychain, windows, etc.)  from within python.  I never went down this path because at any given time I am bouncing between various desktops, laptops, and operating systems.  Also, working as a consultant, I never wanted to store client credentials in any kind of shared system capability.  I need maximum portability and maximum  flexibility.
+- Tap into OS credentials store 
+  - The python [keyring](https://pypi.org/project/keyring/) module allows you to access a systems' keyring service (Mac OS X Keychain, windows, etc.)  from within python.  
+  - I never went down this path because at any given time I am bouncing between various desktops, laptops, and operating systems.  
+  - Also, working as a consultant, I never wanted to store client credentials in any kind of shared system capability.  I need maximum portability and maximum  flexibility.
+- Tap into a Password Safe type of file
+  - I'm a huge fan of KeePass but the python module does not seem to be maintained and the disclaimers were enough to make me pass.
+  - Python Password Safe looked interesting but is clearly documented as a learning project and I don't have much hope for continued development.
+  - I've not spent much time in this area as it would put me back to file management, encryption, and decryption.
 
 For me, environment variables made the most sense.
 
@@ -53,7 +61,7 @@ And, as it is often pointed out, you need a key or password to decrypt that file
 
 
 
-### Python Modules we will cover
+### Python Modules Discussed
 
 | Module          | Pros                                                         | Cons                                                         |
 | --------------- | ------------------------------------------------------------ | ------------------------------------------------------------ |
@@ -89,9 +97,11 @@ Python comes with the **os** module which allows you to interact with the operat
 
 This repository began when I tool some of my early Nornir scripts and converted them to use environment variables.  The main example here is the ***env\_creds.py*** script. You will notice that it has similar functions to the ***add\_2env.py*** script.  This is included here to give you an idea of what can be done but also so you have something to work with.   Later versions of this script use the python-dotenv module and, if the expected variables are not set, then it leverages the interactive functions.
 
- The ***add\_2env.py*** script and its re-usable modules (which you will see in the subsequent scripts) needs no 3rd party modules.   In main() you have examples of how the various functions can be used.  
+The *set_creds* function in ***env\_creds.py*** script can be directly attributed to Chris Crook ([@ctopher78](https://twitter.com/ctopher78)) with some minor updates to allow setting credentials at the default level, at the group level, or at the device level.  See a typical run of the script [here](run_output_for_env_creds.txt).
 
-1. First the script outputs all the current environment variables.
+The ***add\_2env.py*** script and its re-usable modules (which you will see in the subsequent scripts) needs no 3rd party modules.   In main() you have examples of how the various functions within the script can be used.  
+
+1. First the script outputs all the current environment variables with the *all_env_vars* function.
 2. Next, the *set\_env* function is called to set a Username.   This function allows you to set a name. By default it will turn the name into all uppercase as is the environment variable convention.  It will also echo back the value.  Before existing, the function calls the *check\_env* function to validate that the environmental variable is set.
 3. Once the Username environment variable is set the script calls the *set\_env* function again but overrides some of the default behavior.  The description is set to "Password" so that the user knows what is being requested and the sensitivity option is set to true.  That triggers the use of the **getpass** module so that the password is not echoed back to the screen.  It also adjusts the notifications (if they are set) to not display the password.
 4. Lastly, the script outputs all the current environment variables again.  This can be used as a final visual check that the variables set are in fact there.
@@ -189,17 +199,19 @@ UPDATED Environment Variables:
 
 ### python-dotenv module
 
+[python-dotenv module on PyPI](https://pypi.org/project/python-dotenv/)
+
 Distinguishing features:
 
 - Easy to use
 - Accepts stream of data
 - Allows you to set a default value
-- Does not overwrite existing System environment variables by default but give you the option to do so
+- Does not overwrite existing system environment variables by default but gives you the option to do so
 - There is an optional CLI interface you can use to update the .env file
 
 The python-dotenv module is pretty effortless.
 
-If you look at how it was used in the ***env\_apikeys.py*** script, its one line (and you have to make sure you have your .env file with the values you need).
+If you look at how it was used in the ***env\_apikeys.py*** script, its one line (of course, you have to make sure you have your .env file with the values you need).
 
 ```python
     dotenv.load_dotenv()
@@ -213,29 +225,78 @@ load_env_from_dotenv_file(path)
 
 In this way, you can import the  ***load\_2env\_dotenv.py*** and have access to the *load_env_from_dotenv_file* function from any other script.
 
-The main() part of the script provides examples of how to use the function and validate that the variables you want have been set.
+The **main()** part of the script provides examples of how to use the function and validate that the variables you want have been set.
 
-The one other noteworthy feature of the python-dotenv module is that it will not only accept a .env file but it will also accept a "filelike" stream of data and present it to you as a dictionary.  There may be some instances where you want to use information in the .env file but not actually set the environment variables.
+The one other noteworthy feature of the python-dotenv module is that it will not only accept an .env file but it will also accept a "filelike" stream of data and present it to you as a dictionary.  There may be some instances where you want to use information in the .env file but not actually set the environment variables.
 
-[python-dotenv module on PyPI](https://pypi.org/project/python-dotenv/)
+Example execution:
+
+```bash
+(env_variables) claudia@Claudias-iMac creds_in_env % python load_2env_dotenv.py
+
+======= Confirm variables loaded from .env file are valid environment variables: 
+        Environment Variable API_KEY is valid!
+        Environment Variable MY_ENV is valid!
+        Environment Variable MY_REPO is valid!
+        Environment Variable CONTEXT is valid!
+        Environment Variable NETUSER is valid!
+        Environment Variable NETPASS is valid!
+        Environment Variable MY_BOOL is valid!
+        Environment Variable MY_INT is valid!
+        Environment Variable NOT_THERE does not exist!
+(env_variables) claudia@Claudias-iMac creds_in_env % 
+
+```
 
 
 
 ### Python-decouple module
 
+[Python-decouple module on PyPI](https://pypi.org/project/python-decouple/)
+
 Distinguishing features:
 
-- Allows you to "cast" the variable to a specific type (integer, boolean). This is an important capability and can be quit handy
+- Allows you to "cast" the variable to a specific type (integer, boolean). This is an important capability and can be quit handy.
 - Easy to use
 - Allows you to set a default value
+- Note: This module does not actually set environment variables but does read them from a .env file and make them available to your script in a very easy and intuitive manner.
 
-If you need values of type boolean or integer then this is the module you need to use.  This module does not actually set environment variables for just that reason.  It does allow you to put your configuration settings into a .ini or .env file and easily read them.  Like python-dotenv, its important to remember to exclude those files in your .gitignore.
+If you need values of type boolean or integer then this is the module might be of interest.  This module does not actually set environment variables for just that reason.  It does allow you to put your configuration settings into a .ini or .env file and easily read them.  Like python-dotenv, its important to remember to exclude those files in your .gitignore.
 
-For completeness I have a load_env_decouple.py script.
+For completeness I have a ***load_env_decouple.py*** script.
 
-The protocol is a little different that what we have been working with.  There is no Setting or Loading really.  
+The mechanism for the module is a little different than what we have been working with.  Obviously we are not setting environment variables but rather loading them into the scripts name space and manipulating types and defaults as needed.    
 
-[Python-decouple module on PyPI](https://pypi.org/project/python-decouple/)
+Example execution:
+
+```
+(env_variables) claudia@Claudias-iMac creds_in_env % python load_env_decouple.py
+
+======= View Variables loaded from .env file: 
+.env file variable name: API_KEY with value: Secret_API_Key of type <class 'str'>
+.env file variable name: MY_ENV with value: Claudia's iMac of type <class 'str'>
+.env file variable name: MY_REPO with value: creds_in_env of type <class 'str'>
+.env file variable name: CONTEXT with value: DEV of type <class 'str'>
+.env file variable name: NETUSER with value: cisco of type <class 'str'>
+.env file variable name: NETPASS with value: cisco of type <class 'str'>
+.env file variable name: MY_BOOL with value: True of type <class 'str'>
+.env file variable name: MY_INT with value: 12 of type <class 'str'>
+.env file variable name: TEST with value: Will this show up? of type <class 'str'>
+
+Boolean Value with default and cast set:  variable MY_BOOL with value: True of type <class 'bool'>
+
+Integer Value with default and cast set:  variable MY_INT with value: 12 of type <class 'int'>
+
+
+Checking for environment variable: TEST:
+        Exists: False
+        Valid: False
+        Value: None
+(env_variables) claudia@Claudias-iMac creds_in_env % 
+
+```
+
+
 
 
 
@@ -495,23 +556,15 @@ https://revgeocode.search.hereapi.com/v1/revgeocode?at=26.9096,25.6794&lang=en-U
 
 
 
-### Useful Links
+# Useful Links
 
-[Hiding secret info in Python using environment variables](https://medium.com/dataseries/hiding-secret-info-in-python-using-environment-variables-a2bab182eea) - Raivat Shah on Medium
-
-[AskPython](https://www.askpython.com/python/environment-variables-in-python) 
-
-[Libhunt comparison of dotenv vs decouple](https://python.libhunt.com/compare-python-dotenv-vs-python-decouple) 
-
-
-
-https://stackoverflow.com/questions/62245142/is-it-possible-to-encrypt-the-information-in-env-file-in-laravel
-
-https://portalzine.de/dev/hosting/keeping-development-credentials-secure/
-
-https://www.honeybadger.io/blog/securing-environment-variables/
-
-https://www.metaltoad.com/blog/how-to-encrypt-serverless-environment-variable-secrets-with-kms
+- [Hiding secret info in Python using environment variables](https://medium.com/dataseries/hiding-secret-info-in-python-using-environment-variables-a2bab182eea) - Raivat Shah on Medium
+- [AskPython](https://www.askpython.com/python/environment-variables-in-python) 
+- [Libhunt comparison of dotenv vs decouple](https://python.libhunt.com/compare-python-dotenv-vs-python-decouple) 
+- Stackoverflow: [Is it possible to encrypt the information in .env file (in Laravel)?](https://stackoverflow.com/questions/62245142/is-it-possible-to-encrypt-the-information-in-env-file-in-laravel)
+- [Keeping Development Credentials Secure](https://portalzine.de/dev/hosting/keeping-development-credentials-secure/)
+- [Securing Environment Variables](https://www.honeybadger.io/blog/securing-environment-variables/)
+- [Your Serverless Function has a Secret](https://www.metaltoad.com/blog/how-to-encrypt-serverless-environment-variable-secrets-with-kms)
 
 
 
