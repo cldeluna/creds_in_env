@@ -1,0 +1,23 @@
+---
+
+# Local Lab Devices
+sw06:
+  hostname: 10.1.10.216
+  groups: ['uwaco_network']
+#
+weddell-sw02:
+  hostname: 10.1.10.212
+  groups: ['uwaco_network']
+#
+#arctic-ds01-as01:
+#  hostname: 10.1.10.102
+#  groups: ['uwaco_network']
+
+# DevNet Always On Sandbox Devices
+ios-xe-mgmt:
+  hostname: ios-xe-mgmt.cisco.com
+  groups: ['devnet_sandbox_iosxe']
+#
+sbx-nxos-mgmt:
+  hostname: sbx-nxos-mgmt.cisco.com
+  groups: ['devnet_sandbox_nxos']

@@ -1,0 +1,26 @@
+---
+# IMPORTANT:  Putting credentials in a file is a bad practice and is only done here to ease getting started quickly
+# In the next installment of this series we will look at putting usernames and passwords in environment variables
+
+# Local Lab Devices
+uwaco_network:
+  platform: ios
+  username: cisco
+  password: cisco
+
+# DevNet Always On Sandbox Devices
+devnet_sandbox_iosxe:
+  platform: ios
+  port: 8181
+  # Comment out for production or to test using environment variables to store passwords or real time
+  # (during script execution) password entry in CLI
+  username: root
+  password: D_Vay!_10&
+#
+devnet_sandbox_nxos:
+  platform: nxos
+  port: 443
+  # Comment out for production or to test using environment variables to store passwords or real time
+  # (during script execution) password entry in CLI
+  username: admin
+  password: Admin_1234!
