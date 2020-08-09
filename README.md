@@ -79,7 +79,7 @@ And, as it is often pointed out, you need a key or password to decrypt that file
 | env_creds.py          | nornir                        | Example standalone script that incorporates use of environment variables to execute Nornir actions on a network topology. |
 | load_2env_dotenv.py   | python-dotenv                 | Some functions using the python-dotenv module to set and load environment variables into your Python script. |
 | load_2env_decouple.py | python-decouple               | Some functions using the python-decouple module to set and load environment variables into your Python script. |
-| env_apikeys.py        | requests                      | Example script working with APIs (one of which requires a key).  Includes the use of functions in the other scripts to set and check environment variables and .env files to save API Keys. |
+| env_apikeys.py        | requests                      | Example script working with APIs (one of which requires a key).  Includes the use of functions in the other scripts to set and check environment variables and .env files to save API Keys.  Shows both a python only option with os.environ as well as an option using python-dotenv. |
 
 
 
@@ -304,9 +304,9 @@ Checking for environment variable: TEST:
 
 Working with APIs is always an eye opener on what is possible with the data that is out there.
 
-Open Notify provides [Open APIs From Space](http://open-notify.org/Open-Notify-API/).  Here you can openly (no key or authentication is needed) query a REST API and get 
+Open Notify provides [Open APIs From Space](http://open-notify.org/Open-Notify-API/).  Here you can openly (no key or authentication is needed) query a REST API and get: 
 
-- the location of the International Space Station, 
+- the location of the International Space Station (ISS), 
 - predictions as to when the ISS will pass over a given location, and 
 - how many people are currently in space!
 
@@ -325,11 +325,11 @@ When the ISS is over land the location call to the Open Notify REST API will ret
 
 I know you all share my excitement at having this data at our fingertips but some might suggest that it would be nice to translate LAT/LONG to a more commonly recognizable location.
 
-There are [number of services](https://gisgeography.com/reverse-geocoding-services-addresses-free-paid/) for this and in this example we shall use the  [HERE Geocoding API](https://developer.here.com/c/geocoding) because its so easy to use and its free.
+There are [number of services](https://gisgeography.com/reverse-geocoding-services-addresses-free-paid/) for this and in this example we shall use the [HERE Geocoding API](https://developer.here.com/c/geocoding) because its so easy to use and its free.
 
-Lets not lose sight of our goal here, which is to deal responsibly with our credentials and keys.
+Let's not lose sight of our goal here, which is to deal responsibly with our credentials and keys.
 
-Once you have an [API Key](https://developer.here.com/c/geocoding), the **env_apikeys.py** script provides two examples of working with the key.
+Once you have an [API Key](https://developer.here.com/c/geocoding), the **env_apikeys.py** script provides <u>**two examples**</u> of working with the key.
 
 ###### Interactively add the key as an environment variable
 
