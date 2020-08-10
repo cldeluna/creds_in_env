@@ -37,7 +37,13 @@ def all_env_vars(verbose=True):
     env_vars = os.environ
 
     if verbose:
-        print(f"\n======== ENVIRONMENT VARIABLES for USER {os.environ['USER']} ======== ")
+        if "USER" in env_vars.keys():
+            sys_user = os.environ['USER']
+        elif "USERNAME" in env_vars.keys():
+            sys_user = os.environ['USERNAME']
+        else:
+            sys_user = "System Username cannot be determined"
+        print(f"\n======== ENVIRONMENT VARIABLES for USER {sys_user} ======== ")
         pprint.pprint(dict(env_vars), width  = 4)
 
     # Return all the environment variables as a dictionary
