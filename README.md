@@ -1,7 +1,5 @@
 # Managing Credentials and Keys More Securely in Python for Network Engineers
 
-How Network Engineers can manage credentials and keys more securely in python
-
 For me, 2020 is going to be the year of taking my automation skills to the next level, and a Pandemic is not going to get in the way of that goal (much)!
 
 At the top of the list is handling credentials and API keys in a more secure fashion.   When you are first learning, most of the examples you find (mine included) put passwords in clear text in files or have you input them interactively.  
@@ -11,7 +9,7 @@ Both approaches work well when getting started but do a disservice in teaching y
 Lets look at the problem we are trying to solve:
 
 - We don't want to expose our credentials in clear text or accidentally include them in a shared repository, particularly one that is public (GitHub - and here I speak from experience).
-- Entering them interactively can be limiting, particularly when you are acting on a variety of devices which may have different credentials.
+- Entering them interactively can be limiting, particularly when you are acting on a variety of devices which may have different credentials.  Its also annoying.
 
 In short, what we all already know:
 
@@ -22,6 +20,7 @@ In my mind, these are the broad categories of approaches:
 
 - Interactive 
   - With this method, the script will interactively ask for the credentials during run time or you provide them during execution via parameters.
+  - In fact you can pass them as arguments using something like [argparse](https://docs.python.org/3/library/argparse.html) and [getpass/getuser](getpass/getuser). See Useful Links below for more on that.
 - File - Encrypted and Unencrypted
   - Put credentials and keys in a file which may or may not be encrypted.  At runtime you decrypt the file as needed and load the sensitive information into your script.  The problem here is that you need a key to decrypt the file and unless you enter that interactively you have to store it somewhere so that its accessible at run time and at that point, if someone has access to the script they likely have access to the key so you are not much better off.
 - Environment Variables 
@@ -40,8 +39,8 @@ For me, environment variables made the most sense.
 
 Why?  Well, I've been waffling with different approaches over the years but Chris Crook ([@ctopher78](https://twitter.com/ctopher78)) shared an example in the Nornir Slack channel late last year that was one of those "golden nuggets" for me.  Talk about hitting all the mandatory requirements:
 
-- No additional Python modules needed
-  - Worst case, in client environments where all I could count on was Python, I could still use this method.  Basically no module requirements other than Python3.
+- No additional Python modules needed and minimal dependencies
+  - Worst case, in client environments where all I could count on was Python, I could still use this method.  Basically no module requirements other than Python3.  Also, if I don't have Internet access (it happens) my script is still fully functional.
 - Cross platform
   - On any platform, Mac, Windows, Linux, I was in business
 - No required interactivity after set up
@@ -49,19 +48,19 @@ Why?  Well, I've been waffling with different approaches over the years but Chri
 
 In addition, this sets up a nice framework so that however I get the environment setup (files,  interactive, additional modules, etc.),  I can modularize my code easily.   
 
-My hope is that the scripts in this repository will show you some ways this can be done and get you thinking about which way works best for you.
+My hope is that the scripts in this repository will show you some ways this can be done and get you thinking about which way works best for you.  
 
 #### File Encryption
 
-A word about file encryption.   None of the examples in this repository get into encrypting files.  That is very valid approach and I'm a huge fan of Ansible Vault but over time I found the environment variable approach much easier to work with.   There is quite alot out there on this topic and I encourage you to do your own research.
+A word about file encryption.   None of the examples in this repository get into encrypting files.  That is very valid approach and I'm a huge fan of [Ansible Vault](https://docs.ansible.com/ansible/latest/user_guide/vault.html) and [HashiCorp Vault](https://www.vaultproject.io/) but over time I found the environment variable approach much easier to work with.   There is quite alot out there on this topic and I encourage you to do your own research.  
 
-For me,  the portability requirement, makes the environment variable approach far superior.   With Ansible, I generally work with one control server pre client or my laptop and so its not onerous to keep an encrypted file on the control server, but outside of Ansible, I don't want to be moving encrypted files around, syncing them, etc.
+For me,  the portability and flexibility requirements, makes the environment variable approach far superior.   With Ansible, I generally work with one control server pre client or my laptop and so its not onerous to keep an encrypted file on the control server, but outside of Ansible, I don't want to be moving encrypted files around, syncing them, etc. 
 
 And, as it is often pointed out, you need a key or password to decrypt that file.  Unless you pass it interactively at run time (which may work for you), you need to store that key somewhere where the script can access it.  Now you are back to securing a file or setting an environment variable.  
 
 
 
-### Python Modules Discussed
+### Pros/Cons of Python Modules Discussed
 
 | Module          | Pros                                                         | Cons                                                         |
 | --------------- | ------------------------------------------------------------ | ------------------------------------------------------------ |
@@ -82,6 +81,20 @@ And, as it is often pointed out, you need a key or password to decrypt that file
 | env_apikeys.py        | requests                      | Example script working with APIs (one of which requires a key).  Includes the use of functions in the other scripts to set and check environment variables and .env files to save API Keys.  Shows both a python only option with os.environ as well as an option using python-dotenv. |
 
 
+
+## Installation
+
+1. [Define a virtual environment with Python3](https://realpython.com/python-virtual-environments-a-primer/).
+2. Activate your new virtual environment
+3. Install all the required modules with the pip install command as shown below
+
+```
+pip install -r requirements.txt
+```
+
+
+
+## Code Review
 
 ### Python built in os module
 
@@ -562,9 +575,17 @@ https://revgeocode.search.hereapi.com/v1/revgeocode?at=26.9096,25.6794&lang=en-U
 - [AskPython](https://www.askpython.com/python/environment-variables-in-python) 
 - [Libhunt comparison of dotenv vs decouple](https://python.libhunt.com/compare-python-dotenv-vs-python-decouple) 
 - Stackoverflow: [Is it possible to encrypt the information in .env file (in Laravel)?](https://stackoverflow.com/questions/62245142/is-it-possible-to-encrypt-the-information-in-env-file-in-laravel)
+- Stackoverflow: [Python: Using getpass with argparse](https://stackoverflow.com/questions/27921629/python-using-getpass-with-argparse)
 - [Keeping Development Credentials Secure](https://portalzine.de/dev/hosting/keeping-development-credentials-secure/)
 - [Securing Environment Variables](https://www.honeybadger.io/blog/securing-environment-variables/)
 - [Your Serverless Function has a Secret](https://www.metaltoad.com/blog/how-to-encrypt-serverless-environment-variable-secrets-with-kms)
+
+
+
+For more examples, check out my articles on getting started with Nornir at [The Gratuitous Arp](https://gratuitous-arp.net/):
+
+- [Nornir – A New Network Automation Framework](https://github.com/cldeluna/nornir_intro2)
+- [Configuration Creation with Nornir](https://gratuitous-arp.net/configuration-creation-with-nornir/)
 
 
 
