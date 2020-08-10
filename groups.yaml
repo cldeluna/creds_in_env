@@ -3,10 +3,10 @@
 # In the next installment of this series we will look at putting usernames and passwords in environment variables
 
 # Local Lab Devices
-uwaco_network:
-  platform: ios
-  username: cisco
-  password: cisco
+#uwaco_network:
+#  platform: ios
+#  username: cisco
+#  password: cisco
 
 # DevNet Always On Sandbox Devices
 devnet_sandbox_iosxe:

@@ -1,13 +1,13 @@
 ---
 
 # Local Lab Devices
-sw06:
-  hostname: 10.1.10.216
-  groups: ['uwaco_network']
-#
-weddell-sw02:
-  hostname: 10.1.10.212
-  groups: ['uwaco_network']
+#sw06:
+#  hostname: 10.1.10.216
+#  groups: ['uwaco_network']
+##
+#weddell-sw02:
+#  hostname: 10.1.10.212
+#  groups: ['uwaco_network']
 #
 #arctic-ds01-as01:
 #  hostname: 10.1.10.102
