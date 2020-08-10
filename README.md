@@ -1,16 +1,14 @@
 # Managing Credentials and Keys More Securely in Python for Network Engineers
 
-Python provides more secure management of credentials and keys for network engineers
-
 For me, 2020 is going to be the year of taking my automation skills to the next level, and a Pandemic is not going to get in the way of that goal (much)!
 
 At the top of the list is handling credentials and API keys in a more secure fashion.   When you are first learning, most of the examples you find (mine included) put passwords in clear text in files or have you input them interactively.  
 
-Both approaches work well when getting started but do a disservice in teaching you how to take your network automation scripts into production and getting into good habits.  
+Both approaches work well when getting started but do a disservice in teaching you how to ready your network automation scripts for production and in getting into good habits.  
 
 Lets look at the problem we are trying to solve:
 
-- We don't want to expose our credentials in clear text or accidentally include them in a shared repository, particularly one that is public (GitHub - and here I speak from experience).
+- We don't want to expose our credentials in clear text or accidentally include them in a shared repository, particularly one that is public (i.e. GitHub - and here I speak from experience).
 - Entering them interactively can be limiting, particularly when you are acting on a variety of devices which may have different credentials.  Its also annoying.
 
 In short, what we all already know:
@@ -28,10 +26,10 @@ In my mind, these are the broad categories of approaches:
 - Environment Variables 
   - Set credentials and keys as environment variables that your script can access during runtime.
   - In fact these can be set interactively (think CLI) and via a file as well (look for .env or .ini files in repositories and you now know what they are)
-- Tap into OS credentials store 
+- Tap into Operating System credentials store 
   - The python [keyring](https://pypi.org/project/keyring/) module allows you to access a systems' keyring service (Mac OS X Keychain, windows, etc.)  from within python.  
   - I never went down this path because at any given time I am bouncing between various desktops, laptops, and operating systems.  
-  - Also, working as a consultant, I never wanted to store client credentials in any kind of shared system capability.  I need maximum portability and maximum  flexibility.
+  - Also, working as a consultant, I never wanted to store client credentials in any kind of shared system capability or mix them in with my own.  I need maximum portability and maximum  flexibility.
 - Tap into a Password Safe type of file
   - I'm a huge fan of KeePass but the python module does not seem to be maintained and the disclaimers were enough to make me pass.
   - Python Password Safe looked interesting but is clearly documented as a learning project and I don't have much hope for continued development.
@@ -56,7 +54,7 @@ My hope is that the scripts in this repository will show you some ways this can 
 
 #### File Encryption
 
-A word about file encryption.   None of the examples in this repository get into encrypting files.  That is very valid approach and I'm a huge fan of [Ansible Vault](https://docs.ansible.com/ansible/latest/user_guide/vault.html) and [HashiCorp Vault](https://www.vaultproject.io/) but over time I found the environment variable approach much easier to work with.   There is quite alot out there on this topic and I encourage you to do your own research.  
+A word about file encryption.   None of the examples in this repository get into encrypting files.  That is a valid approach and I'm a huge fan of [Ansible Vault](https://docs.ansible.com/ansible/latest/user_guide/vault.html) and [HashiCorp Vault](https://www.vaultproject.io/) but over time I found the environment variable approach much easier to work with.   There is quite alot out there on this topic and I encourage you to do your own research.  
 
 For me,  the portability and flexibility requirements makes the environment variable approach far superior.   With Ansible, I generally work with one control server pre client or my laptop and so its not onerous to keep an encrypted file on the control server, but outside of Ansible, I don't want to be moving encrypted files around, syncing them, etc. 
 
@@ -82,7 +80,7 @@ And, as it is often pointed out, you need a key or password to decrypt that file
 | env_creds.py         | nornir                        | Example standalone script that incorporates use of environment variables to execute Nornir actions on a network topology.  The script checks for the specified environment variables, and if they are not set either as environment variables or within the topology YAML files then the script will prompt for the needed values. |
 | load_2env_dotenv.py  | python-dotenv                 | Some functions using the python-dotenv module to set and load environment variables into your Python script. |
 | load_env_decouple.py | python-decouple               | Some functions using the python-decouple module to load key/value pairs into your Python script.  This module does not actually get or set environment variables but it does use a .env file.   I don't use this module much because you are right back to credentials in clear text stored in a file.  The .env convention means if my .gitignore file is set up properly to exclude .env I won't put it into my repository and it means I can remove any credentials or keys from my topology YAML and other files that I do want to be part of the repo. |
-| env_apikeys.py       | requests                      | Example script working with APIs (one of which requires a key).  Includes the use of functions in the other scripts to set and check environment variables and .env files to save API Keys.  Shows both a python only option with os.environ as well as an option using python-dotenv. |
+| env_apikeys.py       | requests                      | Example script working with APIs (one of which requires a key).  Includes the use of functions in the other scripts to set and check environment variables and .env files to save API Keys.  Shows both a Python only option with os.environ as well as an option using python-dotenv. |
 
 
 
@@ -348,7 +346,7 @@ Once you have an [API Key](https://developer.here.com/c/geocoding), the **env_ap
 
 ###### Interactively add the key as an environment variable
 
-The first, and default, is to interactively set an environment variable with the key.  This method can be done with just python (no extra modules for key manipulation), although the script requires the **requests** module for the REST API interactions.
+The first, and default, is to interactively set an environment variable with the key.  This method can be done with just Python (no extra modules for key manipulation), although the script requires the **requests** module for the REST API interactions.
 
 ###### Store the key in a .env file
 
@@ -594,3 +592,4 @@ For more examples, check out my articles on getting started with Nornir at [The 
 ## Licensing
 
 This code is licensed under the BSD 3-Clause License. See [LICENSE](https://github.com/CiscoDevNet/code-exchange-repo-template/blob/master/manual-sample-repo/LICENSE) for details.
+
