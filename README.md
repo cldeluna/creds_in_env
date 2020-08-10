@@ -1,5 +1,7 @@
 # Managing Credentials and Keys More Securely in Python for Network Engineers
 
+Python provides more secure management of credentials and keys for network engineers
+
 For me, 2020 is going to be the year of taking my automation skills to the next level, and a Pandemic is not going to get in the way of that goal (much)!
 
 At the top of the list is handling credentials and API keys in a more secure fashion.   When you are first learning, most of the examples you find (mine included) put passwords in clear text in files or have you input them interactively.  
@@ -35,9 +37,11 @@ In my mind, these are the broad categories of approaches:
   - Python Password Safe looked interesting but is clearly documented as a learning project and I don't have much hope for continued development.
   - I've not spent much time in this area as it would put me back to file management, encryption, and decryption.
 
-For me, environment variables made the most sense.
+For me, environment variables made the most sense.  
 
-Why?  Well, I've been waffling with different approaches over the years but Chris Crook ([@ctopher78](https://twitter.com/ctopher78)) shared an example in the Nornir Slack channel late last year that was one of those "golden nuggets" for me.  Talk about hitting all the mandatory requirements:
+If you are not familiar with environment variables I've tried to provide a short introduction [here](what_are_env_variables.md).
+
+Why environment variables?  Well, I've been waffling with different approaches over the years but Chris Crook ([@ctopher78](https://twitter.com/ctopher78)) shared an example in the Nornir Slack channel late last year that was one of those "golden nuggets" for me.  Talk about hitting all the mandatory requirements:
 
 - No additional Python modules needed and minimal dependencies
   - Worst case, in client environments where all I could count on was Python, I could still use this method.  Basically no module requirements other than Python3.  Also, if I don't have Internet access (it happens) my script is still fully functional.
@@ -54,7 +58,7 @@ My hope is that the scripts in this repository will show you some ways this can 
 
 A word about file encryption.   None of the examples in this repository get into encrypting files.  That is very valid approach and I'm a huge fan of [Ansible Vault](https://docs.ansible.com/ansible/latest/user_guide/vault.html) and [HashiCorp Vault](https://www.vaultproject.io/) but over time I found the environment variable approach much easier to work with.   There is quite alot out there on this topic and I encourage you to do your own research.  
 
-For me,  the portability and flexibility requirements, makes the environment variable approach far superior.   With Ansible, I generally work with one control server pre client or my laptop and so its not onerous to keep an encrypted file on the control server, but outside of Ansible, I don't want to be moving encrypted files around, syncing them, etc. 
+For me,  the portability and flexibility requirements makes the environment variable approach far superior.   With Ansible, I generally work with one control server pre client or my laptop and so its not onerous to keep an encrypted file on the control server, but outside of Ansible, I don't want to be moving encrypted files around, syncing them, etc. 
 
 And, as it is often pointed out, you need a key or password to decrypt that file.  Unless you pass it interactively at run time (which may work for you), you need to store that key somewhere where the script can access it.  Now you are back to securing a file or setting an environment variable.  
 
@@ -64,21 +68,21 @@ And, as it is often pointed out, you need a key or password to decrypt that file
 
 | Module          | Pros                                                         | Cons                                                         |
 | --------------- | ------------------------------------------------------------ | ------------------------------------------------------------ |
-| os.environ      | Part of Python base. No need for any additional modules      | Interactive or requires a bit more work to read in a file and then set the environment variables. |
+| os.environ      | Part of Python base. No need for any additional modules      | You have to get the environment variables into the environment which is pretty easy to do. <br />Either:<br />- Interactive (one time or you can make the persistent) <br />or <br />- read in a file and then set the environment variables (requires a bit more work unless you use the python-dotenv module) |
 | python-dotenv   | Very easy to use, with one line you set one or more variables  in an .env or .ini file as environment variables. | Needs to be installed.  If you need non string values you have to do that conversion in your code |
-| python-decouple | This is the module you want if you need other variable types than string in your script and do not want or cannot do the conversion in your code (.ie a settings file) | Brings variables from an .env or .ini file into your scripts name space so they can be used but does not set the environment variables. |
+| python-decouple | This is the module you want if you need other variable types than string in your script and do not want or cannot do the conversion in your code (.ie a settings file) | Brings variables from an .env or .ini file into your scripts name space so they can be used but does **not set the environment variables**. |
 
 
 
 ### Script Overview
 
-| Script Name           | 3rd Party Module Requirements | Notes                                                        |
-| --------------------- | ----------------------------- | ------------------------------------------------------------ |
-| add_2env.py           | None                          | This is a pure Python3 script which defines a set of reusable modules to manipulate the execution environment so that network automation tools can be executed using credentials set as environment variables.<br /><br />The script has the following functions:<br />**all_env_vars**<br />*get, and optionally print, the currently defined environment variables*<br />**check_env**<br /><br />*check to see if a specific environment variable is defined*<br />**set_env**<br />*set an environment variable* |
-| env_creds.py          | nornir                        | Example standalone script that incorporates use of environment variables to execute Nornir actions on a network topology. |
-| load_2env_dotenv.py   | python-dotenv                 | Some functions using the python-dotenv module to set and load environment variables into your Python script. |
-| load_2env_decouple.py | python-decouple               | Some functions using the python-decouple module to set and load environment variables into your Python script. |
-| env_apikeys.py        | requests                      | Example script working with APIs (one of which requires a key).  Includes the use of functions in the other scripts to set and check environment variables and .env files to save API Keys.  Shows both a python only option with os.environ as well as an option using python-dotenv. |
+| Script Name          | 3rd Party Module Requirements | Notes                                                        |
+| -------------------- | ----------------------------- | ------------------------------------------------------------ |
+| add_2env.py          | None                          | This is a pure Python3 script which defines a set of reusable modules to manipulate the execution environment so that network automation tools can be executed using credentials set as environment variables.<br /><br />The script has the following functions:<br />**all_env_vars**<br />*get, and optionally print, all the currently defined environment variables*<br />**check_env**<br /><br />*check to see if a specific environment variable is defined*<br />**set_env**<br />*set an environment variable* |
+| env_creds.py         | nornir                        | Example standalone script that incorporates use of environment variables to execute Nornir actions on a network topology.  The script checks for the specified environment variables, and if they are not set either as environment variables or within the topology YAML files then the script will prompt for the needed values. |
+| load_2env_dotenv.py  | python-dotenv                 | Some functions using the python-dotenv module to set and load environment variables into your Python script. |
+| load_env_decouple.py | python-decouple               | Some functions using the python-decouple module to load key/value pairs into your Python script.  This module does not actually get or set environment variables but it does use a .env file.   I don't use this module much because you are right back to credentials in clear text stored in a file.  The .env convention means if my .gitignore file is set up properly to exclude .env I won't put it into my repository and it means I can remove any credentials or keys from my topology YAML and other files that I do want to be part of the repo. |
+| env_apikeys.py       | requests                      | Example script working with APIs (one of which requires a key).  Includes the use of functions in the other scripts to set and check environment variables and .env files to save API Keys.  Shows both a python only option with os.environ as well as an option using python-dotenv. |
 
 
 
@@ -272,7 +276,7 @@ Distinguishing features:
 - Allows you to "cast" the variable to a specific type (integer, boolean). This is an important capability and can be quit handy.
 - Easy to use
 - Allows you to set a default value
-- Note: This module does not actually set environment variables but does read them from a .env file and make them available to your script in a very easy and intuitive manner.
+- Note: This module **does not actually set environment variable**s but does read key/value pairs  from a .env file and make them available to your script in a very easy and intuitive manner.
 
 If you need values of type boolean or integer then this is the module might be of interest.  This module does not actually set environment variables for just that reason.  It does allow you to put your configuration settings into a .ini or .env file and easily read them.  Like python-dotenv, its important to remember to exclude those files in your .gitignore.
 
@@ -308,8 +312,6 @@ Checking for environment variable: TEST:
 (env_variables) claudia@Claudias-iMac creds_in_env % 
 
 ```
-
-
 
 
 
@@ -354,7 +356,7 @@ The second is to create a .env file with the key and read it in during script ex
 
 *Tip*:  When working with structured data returned from APIs or other calls, its important to understand how to get to the data you need.   See [Decomposing Data Structures](https://gratuitous-arp.net/decomposing-complex-json-data-structures/) for more information on this topic.
 
-Example of script execution using the default method (interactively add environment variable)
+Example of script execution using the default method (interactively add environment variable):
 
 ```bash
 (env_variables) claudia@Claudias-iMac creds_in_env % python env_apikeys.py
