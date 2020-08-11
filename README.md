@@ -1,5 +1,7 @@
 # How Network Engineers Can Manage Credentials and Keys More Securely in Python
 
+[![published](https://static.production.devnetcloud.com/codeexchange/assets/images/devnet-published.svg)](https://developer.cisco.com/codeexchange/github/repo/cldeluna/creds_in_env)
+
 For me, 2020 is going to be the year of taking my automation skills to the next level, and a Pandemic is not going to get in the way of that goal (much)!
 
 At the top of the list is handling credentials and API keys in a more secure fashion.   When you are first learning, most of the examples you find (mine included) put passwords in clear text in files or have you input them interactively.  
