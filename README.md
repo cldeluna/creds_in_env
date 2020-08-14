@@ -56,7 +56,7 @@ My hope is that the scripts in this repository will show you some ways this can 
 
 #### File Encryption
 
-A word about file encryption.   None of the examples in this repository get into encrypting files.  That is a valid approach and I'm a huge fan of [Ansible Vault](https://docs.ansible.com/ansible/latest/user_guide/vault.html) and [HashiCorp Vault](https://www.vaultproject.io/) but over time I found the environment variable approach much easier to work with.   There is quite alot out there on this topic and I encourage you to do your own research.  
+A word about file encryption.   None of the examples in this repository get into encrypting files.  That is a valid approach and I'm a huge fan of [Ansible Vault](https://docs.ansible.com/ansible/latest/user_guide/vault.html) and [HashiCorp Vault](https://www.vaultproject.io/) but over time I found the environment variable approach much easier to work with.   There is quite alot out there on this topic and I encourage you to do your own research.   If HashiCorp Vault is of interest to you start with Kareem Iskander's post *[Secure Your Cisco DNA Center API Authentication with Vault](https://blogs.cisco.com/developer/dna-center-api-authentication-with-vault)*.
 
 For me,  the portability and flexibility requirements makes the environment variable approach far superior.   With Ansible, I generally work with one control server pre client or my laptop and so its not onerous to keep an encrypted file on the control server, but outside of Ansible, I don't want to be moving encrypted files around, syncing them, etc. 
 
