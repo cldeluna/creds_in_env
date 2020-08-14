@@ -1,4 +1,4 @@
-Copyright 2019 Claudia de Luna (Indigo Wire Networks)
+Copyright 2020 Claudia de Luna (Indigo Wire Networks)
 
 Redistribution and use in source and binary forms, with or without modification, are permitted provided that the following conditions are met:
 
