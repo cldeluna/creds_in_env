@@ -22,7 +22,7 @@ In my mind, these are the broad categories of approaches:
 
 - Interactive 
   - With this method, the script will interactively ask for the credentials during run time or you provide them during execution via parameters.
-  - In fact you can pass them as arguments using something like [argparse](https://docs.python.org/3/library/argparse.html) and [getpass/getuser](getpass/getuser). See Useful Links below for more on that.
+  - In fact you can pass them as arguments using something like [argparse](https://docs.python.org/3/library/argparse.html) and [getpass/getuser](https://docs.python.org/3/library/getpass.html). See Useful Links below for more on that.
 - File - Encrypted and Unencrypted
   - Put credentials and keys in a file which may or may not be encrypted.  At runtime you decrypt the file as needed and load the sensitive information into your script.  The problem here is that you need a key to decrypt the file and unless you enter that interactively you have to store it somewhere so that its accessible at run time and at that point, if someone has access to the script they likely have access to the key so you are not much better off.
 - Environment Variables 
