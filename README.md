@@ -28,11 +28,11 @@ In my mind, these are the broad categories of approaches:
 - Environment Variables 
   - Set credentials and keys as environment variables that your script can access during runtime.
   - In fact these can be set interactively (think CLI) and via a file as well (look for .env or .ini files in repositories and you now know what they are)
-- Tap into Operating System credentials store 
+- Tap into Operating System credentials store (Subset of File - Encrypted File)
   - The python [keyring](https://pypi.org/project/keyring/) module allows you to access a systems' keyring service (Mac OS X Keychain, windows, etc.)  from within python.  
   - I never went down this path because at any given time I am bouncing between various desktops, laptops, and operating systems.  
   - Also, working as a consultant, I never wanted to store client credentials in any kind of shared system capability or mix them in with my own.  I need maximum portability and maximum  flexibility.
-- Tap into a Password Safe type of file
+- Tap into a Password Safe type of file (Subset of File - Encrypted File)
   - I'm a huge fan of KeePass but the python module does not seem to be maintained and the disclaimers were enough to make me pass.
   - Python Password Safe looked interesting but is clearly documented as a learning project and I don't have much hope for continued development.
   - I've not spent much time in this area as it would put me back to file management, encryption, and decryption.
